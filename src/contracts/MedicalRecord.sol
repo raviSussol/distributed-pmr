@@ -13,7 +13,6 @@ contract MedicalRecord {
     string outcome;
     string comments;
   }
-
   mapping(address => MedicalProblem) public medicalProblems;
 
   struct Allergy {
@@ -30,7 +29,6 @@ contract MedicalRecord {
     string outcome;
     string comments;
   }
-
   mapping(address => Allergy) public allergies;
 
   struct Medication {
@@ -45,6 +43,9 @@ contract MedicalRecord {
     string outcome;
     string comments;
   }
-
   mapping(address => Medication) public medications;
+
+  function createMedication() public {
+
+  }
 }
