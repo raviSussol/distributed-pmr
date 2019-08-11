@@ -1,0 +1,38 @@
+{
+  "parser": "babel-eslint",
+  "extends": ["eslint:recommended"],
+  "globals": {
+    // Jest Globals
+    // https://facebook.github.io/jest/docs/api.html
+    "afterAll": true,
+    "afterEach": true,
+    "beforeAll": true,
+    "beforeEach": true,
+    "describe": true,
+    "expect": true,
+    "jest": true,
+    "test": true,
+    // global polyfill - no imports
+    "fetch": true,
+    // DOM
+    "document": true,
+    "screen": true,
+    "window": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "sourceType": "module"
+  },
+  "env": {
+    "node": true,
+    "mocha": true
+  },
+  "rules": {
+    "import/prefer-default-export": "off",
+    "jsx-boolean-value": "off",
+    "object-shorthand": "off",
+    "react/jsx-filename-extension": "off",
+    "semi": "error",
+    "quotes": [2, "single"]
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "presets": ["es2015", "stage-2", "stage-3"],
+  "plugins": [
+    // for jest
+    "syntax-dynamic-import"
+  ],
+  "env": {
+    "test": {
+      // https://facebook.github.io/jest/docs/en/webpack.html#using-with-webpack-2
+      "plugins": ["dynamic-import-node"]
+    }
+  }
+}
