@@ -19,4 +19,4 @@ Doctor portal
 4. Share/request patient's documents (i.e. prescription) to other doctors.
 
 // View
-1. View patients list of created medication records by this doctor.
+1. View patients list of created medication/diagnosed medical problem records by this doctor.
