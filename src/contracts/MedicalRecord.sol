@@ -57,9 +57,17 @@ contract MedicalRecord {
     string outcome;
     string comments;
   }
-  mapping(address => Medication) public medications;
 
-  constructor() {
+  struct patientMedication {
+    uint id;
+    address candidateAddress;
+    Medication medication;
+  }
+
+  mapping(uint => Medication) public medications;
+  mapping(address => patientMedication) public patientMedications;
+
+  constructor() public {
     contractOwner = msg.sender; // Set the contract owner address
   }
 
@@ -71,10 +79,10 @@ contract MedicalRecord {
 
   // All candidates have to go through this registration process
   // And only contract owner can register the candidate
-  function registerCandidate(address _candidate, _candidateRoles, _candidateCanAccess) OwnerOnly public {
+  function registerCandidate(address _candidate, Roles _candidateRoles, _candidateCanAccess) OwnerOnly public {
     candidateList.push(_candidate);
     candidateRoles[_candidate] = _candidateRoles; // Set role for this candidate
-    candidateCanAccess[_candidate] = _candidateCanAccess; // Set role for this candidate
+    candidateCanAccess[_candidate] = _candidateCanAccess; // Set access for this candidate
   }
 
   // Check if this candidate is registered or not before allowing resources access.
@@ -120,12 +128,25 @@ contract MedicalRecord {
     string memory _occurance,
     string memory _referredBy,
     string memory _outcome,
-    string memory _comments) public {
+    string memory _comments,
+    Roles _candidateRoles) public {
 
+    // Require a medication type
+    require(bytes(_medicationType).length > 0, 'Medication type should not be empty');
+    // Require a medication code
+    require(bytes(_medicalCode).length > 0, 'Medical code should not be empty');
+    // Require a begin date
+    require(bytes(_beginDate).length > 0, 'Begin date should not be empty');
+    // Require a referred by
+    require(bytes(_referredBy).length > 0, 'Referred by should not be empty');
     // Require a valid doctor to create medication
-    require(condition);
-    medications[msg.sender] = Medication(
-      _id,
+    require(_candidateRoles == Roles.DOCTOR, 'Only doctor can create medication');
+
+    // Increment medication count
+    medicationCount ++;
+    // Create the medication
+    medications[medicationCount] = Medication(
+      medicationCount,
       _title,
       _medicationType,
       _medicalCode,
@@ -138,5 +159,9 @@ contract MedicalRecord {
     );
   }
 
-  function transferMedicationTo() public
+  function prescribeMedication(address _candidate, Medication) public{
+
+  }
+
+  // function transferMedicationTo() public
 }
