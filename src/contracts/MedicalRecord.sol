@@ -6,6 +6,7 @@ contract MedicalRecord {
   uint public medicalProblemCount = 0;
   uint public allergyCount = 0;
   uint public medicationCount = 0;
+  uint public patientMedicationCount = 0;
 
   // Store roles of each candidate to their corresponding addresses
   mapping(address => Roles) public candidateRoles;
@@ -60,8 +61,8 @@ contract MedicalRecord {
 
   struct patientMedication {
     uint id;
-    address candidateAddress;
-    Medication medication;
+    address[] candidateAddress;
+    Medication[] medication;
   }
 
   mapping(uint => Medication) public medications;
@@ -71,22 +72,27 @@ contract MedicalRecord {
     contractOwner = msg.sender; // Set the contract owner address
   }
 
-  modifier OwnerOnly {
+  modifier onlyOwner {
     if(msg.sender == contractOwner) {
+      _;
+    }
+  }
+
+  modifier onlyDoctor(address _address) {
+    if(candidateRoles[_address] == Roles.DOCTOR) {
       _;
     }
   }
 
   // All candidates have to go through this registration process
   // And only contract owner can register the candidate
-  function registerCandidate(address _candidate, Roles _candidateRoles, _candidateCanAccess) OwnerOnly public {
+  function registerCandidate(address _candidate, Roles _candidateRoles) public onlyOwner {
     candidateList.push(_candidate);
     candidateRoles[_candidate] = _candidateRoles; // Set role for this candidate
-    candidateCanAccess[_candidate] = _candidateCanAccess; // Set access for this candidate
   }
 
   // Check if this candidate is registered or not before allowing resources access.
-  function validateCandidate(address _candidate) view public returns (bool) {
+  function validateCandidate(address _candidate) public view returns (bool) {
     for(uint i = 0; i < candidateList.length; i++) {
       if(candidateList[i] == _candidate) {
         return true;
@@ -159,7 +165,16 @@ contract MedicalRecord {
     );
   }
 
-  function prescribeMedication(address _candidate, Medication) public{
+  function prescribeMedication(address _candidate, uint _medicationId) public {
+    // Require a valid doctor to create medication
+    require(candidateRoles[_candidate] == Roles.DOCTOR, 'Only doctor can create medication');
+    // Fetch the medication
+    Medication memory _medication = medications[_medicationId];
+    // Make sure this medication has a valid id
+    require(_medication.id > 0 && _medication.id <= medicationCount, '');
+    patientMedicationCount ++;
+    patientMedications[_candidate].id = patientMedicationCount;
+    patientMedications[_candidate].medication[patientMedications[_candidate].id] = _medication;
 
   }
 
